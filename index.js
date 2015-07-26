@@ -1,33 +1,14 @@
-// keyControl.js
+var WebSocketClient = require("ws");
 var keypress = require("keypress");
 var Spark = require("spark-io");
 var five = require("johnny-five");
-var Sumobot = require("sumobot")(five);
+var ws = new WebSocketClient('ws://stormy-savannah-2570.herokuapp.com:5000');
 var board = new five.Board({
     io: new Spark({
         token: 'b427b3eb920dc1f7678d267457bbdbb5a97041ea',
         deviceId: '54ff6d066667515139371367'
     })
 });
-
-var app = require('http').createServer(handler)
-var io = require('socket.io')(app);
-var fs = require('fs');
-
-app.listen(3000);
-
-function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-
-    res.writeHead(200);
-    res.end(data);
-  });
-}
 
 keypress(process.stdin);
 board.on("ready", function() {
@@ -62,10 +43,8 @@ board.on("ready", function() {
         processKey(key.name);
     });
 
-    io.on('connection', function (socket) {
-        socket.on('keydown', function (e) {
-            processKey(e.name);
-        });
+    ws.on('message', function(data) {
+        processKey(data);
     });
 
     function processKey(key) {
@@ -117,5 +96,4 @@ board.on("ready", function() {
             break;
         }
     }
-
 });
