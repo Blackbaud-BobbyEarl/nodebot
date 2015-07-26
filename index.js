@@ -2,7 +2,7 @@ var WebSocketClient = require("ws");
 var keypress = require("keypress");
 var Spark = require("spark-io");
 var five = require("johnny-five");
-var ws = new WebSocketClient('ws://stormy-savannah-2570.herokuapp.com:5000');
+var ws = new WebSocketClient('ws://stormy-savannah-2570.herokuapp.com');
 var board = new five.Board({
     io: new Spark({
         token: 'b427b3eb920dc1f7678d267457bbdbb5a97041ea',
@@ -11,7 +11,7 @@ var board = new five.Board({
 });
 
 keypress(process.stdin);
-board.on("ready", function() {
+board.on('ready', function() {
 
     var servoLeft = new five.Servo({
         pin: 'D0',
@@ -64,10 +64,12 @@ board.on("ready", function() {
             break;
             case 'left':
                 servoRight.stop();
+                servoRight.ccw(1);
                 servoLeft.ccw(1);
             break;
             case 'right':
                 servoLeft.stop();
+                servoLeft.cw(1);
                 servoRight.cw(1);
             break;
             case 'space':
